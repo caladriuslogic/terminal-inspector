@@ -1,6 +1,6 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct InspectorOutput {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub terminals: Vec<TerminalEmulator>,
@@ -12,7 +12,7 @@ pub struct InspectorOutput {
     pub zellij: Vec<ZellijSession>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct TerminalEmulator {
     pub app: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -20,13 +20,13 @@ pub struct TerminalEmulator {
     pub windows: Vec<TerminalWindow>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct TerminalWindow {
     pub id: String,
     pub tabs: Vec<TerminalTab>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct TerminalTab {
     pub title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -43,7 +43,7 @@ pub struct TerminalTab {
     pub rows: Option<u32>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct TmuxSession {
     pub name: String,
     pub id: String,
@@ -51,7 +51,7 @@ pub struct TmuxSession {
     pub windows: Vec<TmuxWindow>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct TmuxWindow {
     pub index: u32,
     pub name: String,
@@ -59,7 +59,7 @@ pub struct TmuxWindow {
     pub panes: Vec<TmuxPane>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct TmuxPane {
     pub index: u32,
     pub pid: u32,
@@ -70,7 +70,7 @@ pub struct TmuxPane {
     pub active: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ShelldonInstance {
     pub pid: u32,
     pub port: u16,
@@ -80,7 +80,7 @@ pub struct ShelldonInstance {
     pub panes: Vec<ShelldonPane>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ShelldonPane {
     pub pane_id: u32,
     pub name: String,
@@ -88,7 +88,7 @@ pub struct ShelldonPane {
     pub tabs: Vec<ShelldonTab>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ShelldonTab {
     pub tab_id: String,
     pub title: String,
@@ -96,13 +96,13 @@ pub struct ShelldonTab {
     pub is_active: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ZellijSession {
     pub name: String,
     pub tabs: Vec<ZellijTab>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ZellijTab {
     pub id: u32,
     pub position: u32,
@@ -111,7 +111,7 @@ pub struct ZellijTab {
     pub panes: Vec<ZellijPane>,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct ZellijPane {
     #[serde(skip)]
     pub tab_id: u32,
