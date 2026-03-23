@@ -1,14 +1,6 @@
-mod locate;
-mod process;
-mod shelldon;
-mod terminals;
-mod tmux;
-mod types;
-mod zellij;
-
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use types::InspectorOutput;
+use terminal_inspector::InspectorOutput;
 
 #[derive(Parser)]
 #[command(name = "terminal-inspector", about = "Inspect running terminals and multiplexer sessions")]
@@ -43,7 +35,7 @@ fn main() -> Result<()> {
     let command = cli.command.unwrap_or(Command::All);
 
     if matches!(command, Command::Where) {
-        let uri = locate::locate()?;
+        let uri = terminal_inspector::locate()?;
         println!("{}", uri);
         return Ok(());
     }
@@ -57,28 +49,23 @@ fn main() -> Result<()> {
 
     let output = match command {
         Command::Terminals => InspectorOutput {
-            terminals: terminals::detect_all()?,
+            terminals: terminal_inspector::inspect_terminals()?,
             ..empty
         },
         Command::Tmux => InspectorOutput {
-            tmux: tmux::detect()?,
+            tmux: terminal_inspector::inspect_tmux()?,
             ..empty
         },
         Command::Shelldon => InspectorOutput {
-            shelldon: shelldon::detect()?,
+            shelldon: terminal_inspector::inspect_shelldon()?,
             ..empty
         },
         Command::Zellij => InspectorOutput {
-            zellij: zellij::detect()?,
+            zellij: terminal_inspector::inspect_zellij()?,
             ..empty
         },
         Command::Where => unreachable!("handled above"),
-        Command::All => InspectorOutput {
-            terminals: terminals::detect_all()?,
-            tmux: tmux::detect()?,
-            shelldon: shelldon::detect()?,
-            zellij: zellij::detect()?,
-        },
+        Command::All => terminal_inspector::inspect_all()?,
     };
 
     if cli.pretty {

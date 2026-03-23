@@ -1,6 +1,6 @@
 # terminal-inspector
 
-A CLI tool to inspect running terminal emulators and multiplexer sessions on macOS. Outputs JSON by default for easy integration with other tools.
+A Rust library and CLI tool to inspect running terminal emulators and multiplexer sessions on macOS. Outputs JSON by default for easy integration with other tools.
 
 ## Supported
 
@@ -112,6 +112,32 @@ Default output is compact JSON. Example:
 ```
 
 Empty sections are omitted from the output.
+
+## Library Usage
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+terminal-inspector = { git = "https://github.com/johnmorrow/terminal-inspector" }
+```
+
+```rust
+use terminal_inspector::{locate, inspect_all, inspect_tmux};
+
+// Get a canonical URI for the current terminal location
+let uri = locate()?;
+// => "terminal://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0"
+
+// Inspect everything
+let output = inspect_all()?;
+for term in &output.terminals {
+    println!("{} ({:?})", term.app, term.pid);
+}
+
+// Or inspect specific subsystems
+let sessions = inspect_tmux()?;
+```
 
 ## Requirements
 
