@@ -22,6 +22,11 @@ pub fn locate() -> Result<String> {
         }
     }
 
+    // Detect SSH layer
+    if let Some(ssh_segments) = detect_ssh() {
+        segments.extend(ssh_segments);
+    }
+
     // Detect multiplexer layers
     if let Some(mux_segments) = detect_tmux()? {
         segments.extend(mux_segments);
@@ -202,6 +207,35 @@ fn find_shelldon_tty() -> Option<String> {
         current_pid = ppid;
     }
     None
+}
+
+/// Detect if we're inside an SSH session.
+/// Uses SSH_CONNECTION to extract the remote host, and hostname for the local identity.
+fn detect_ssh() -> Option<Vec<String>> {
+    let ssh_conn = std::env::var("SSH_CONNECTION").ok()?;
+
+    // SSH_CONNECTION format: "client_ip client_port server_ip server_port"
+    let parts: Vec<&str> = ssh_conn.split_whitespace().collect();
+    let client_ip = parts.first().copied().unwrap_or("unknown");
+
+    // Get the local hostname
+    let hostname = Command::new("hostname")
+        .arg("-s")
+        .output()
+        .ok()
+        .filter(|o| o.status.success())
+        .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
+        .unwrap_or_else(|| "unknown".into());
+
+    // Get the current user
+    let user = std::env::var("USER")
+        .or_else(|_| std::env::var("LOGNAME"))
+        .unwrap_or_else(|_| "unknown".into());
+
+    Some(vec![format!(
+        "ssh:{}@{}(from:{})",
+        user, hostname, client_ip
+    )])
 }
 
 fn detect_tmux() -> Result<Option<Vec<String>>> {
