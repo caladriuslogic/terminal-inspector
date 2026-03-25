@@ -1,11 +1,11 @@
 [package]
 name = "terminal-inspector"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["John Morrow <johnmorrow@users.noreply.github.com>"]
 description = "CLI tool to inspect running terminal emulators and multiplexer sessions on macOS"
 license = "MIT"
-repository = "https://github.com/johnmorrow/terminal-inspector"
+repository = "https://github.com/caladriuslogic/terminal-inspector"
 readme = "README.md"
 keywords = ["terminal", "tmux", "zellij", "cli", "macos"]
 categories = ["command-line-utilities"]

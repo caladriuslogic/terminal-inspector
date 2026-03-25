@@ -119,7 +119,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-terminal-inspector = { git = "https://github.com/johnmorrow/terminal-inspector" }
+terminal-inspector = { git = "https://github.com/caladriuslogic/terminal-inspector" }
 ```
 
 ```rust
