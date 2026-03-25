@@ -1,9 +1,9 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use terminal_inspector::InspectorOutput;
+use workspace_inspector::InspectorOutput;
 
 #[derive(Parser)]
-#[command(name = "terminal-inspector", about = "Inspect running terminals and multiplexer sessions")]
+#[command(name = "workspace-inspector", about = "Inspect running terminals, multiplexers, and browsers")]
 struct Cli {
     #[command(subcommand)]
     command: Option<Command>,
@@ -35,7 +35,7 @@ fn main() -> Result<()> {
     let command = cli.command.unwrap_or(Command::All);
 
     if matches!(command, Command::Where) {
-        let uri = terminal_inspector::locate()?;
+        let uri = workspace_inspector::locate()?;
         println!("{}", uri);
         return Ok(());
     }
@@ -49,23 +49,23 @@ fn main() -> Result<()> {
 
     let output = match command {
         Command::Terminals => InspectorOutput {
-            terminals: terminal_inspector::inspect_terminals()?,
+            terminals: workspace_inspector::inspect_terminals()?,
             ..empty
         },
         Command::Tmux => InspectorOutput {
-            tmux: terminal_inspector::inspect_tmux()?,
+            tmux: workspace_inspector::inspect_tmux()?,
             ..empty
         },
         Command::Shelldon => InspectorOutput {
-            shelldon: terminal_inspector::inspect_shelldon()?,
+            shelldon: workspace_inspector::inspect_shelldon()?,
             ..empty
         },
         Command::Zellij => InspectorOutput {
-            zellij: terminal_inspector::inspect_zellij()?,
+            zellij: workspace_inspector::inspect_zellij()?,
             ..empty
         },
         Command::Where => unreachable!("handled above"),
-        Command::All => terminal_inspector::inspect_all()?,
+        Command::All => workspace_inspector::inspect_all()?,
     };
 
     if cli.pretty {

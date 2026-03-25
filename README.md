@@ -1,4 +1,4 @@
-# terminal-inspector
+# workspace-inspector
 
 A Rust library and CLI tool to inspect running terminal emulators and multiplexer sessions on macOS. Outputs JSON by default for easy integration with other tools.
 
@@ -33,25 +33,25 @@ cargo install --path .
 
 ```sh
 # Show everything (JSON)
-terminal-inspector
+workspace-inspector
 
 # Show everything (human-readable)
-terminal-inspector --pretty
+workspace-inspector --pretty
 
 # Only terminal emulators
-terminal-inspector terminals
+workspace-inspector terminals
 
 # Only tmux sessions
-terminal-inspector tmux
+workspace-inspector tmux
 
 # Only shelldon instances
-terminal-inspector shelldon
+workspace-inspector shelldon
 
 # Only zellij sessions
-terminal-inspector zellij
+workspace-inspector zellij
 
 # Print canonical URI for current terminal location
-terminal-inspector where
+workspace-inspector where
 # => terminal://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0
 ```
 
@@ -119,11 +119,11 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-terminal-inspector = { git = "https://github.com/caladriuslogic/terminal-inspector" }
+workspace-inspector = { git = "https://github.com/caladriuslogic/workspace-inspector" }
 ```
 
 ```rust
-use terminal_inspector::{locate, inspect_all, inspect_tmux};
+use workspace_inspector::{locate, inspect_all, inspect_tmux};
 
 // Get a canonical URI for the current terminal location
 let uri = locate()?;

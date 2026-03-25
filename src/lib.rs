@@ -1,9 +1,9 @@
-//! Inspect running terminal emulators and multiplexer sessions on macOS.
+//! Inspect running terminal emulators, multiplexer sessions, and browsers on macOS.
 //!
 //! # Example
 //!
 //! ```no_run
-//! use terminal_inspector::{inspect_all, locate};
+//! use workspace_inspector::{inspect_all, locate};
 //!
 //! // Get a canonical URI for the current terminal location
 //! let uri = locate().unwrap();
