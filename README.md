@@ -1,6 +1,6 @@
 # workspace-inspector
 
-A Rust library and CLI tool to inspect running terminal emulators and multiplexer sessions on macOS. Outputs JSON by default for easy integration with other tools.
+A Rust library and CLI tool to inspect running terminal emulators and multiplexer sessions. Outputs JSON by default for easy integration with other tools.
 
 ## Supported
 
@@ -52,7 +52,7 @@ workspace-inspector zellij
 
 # Print canonical URI for current terminal location
 workspace-inspector where
-# => terminal://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0
+# => workspace://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0
 ```
 
 ## JSON Output
@@ -127,7 +127,7 @@ use workspace_inspector::{locate, inspect_all, inspect_tmux};
 
 // Get a canonical URI for the current terminal location
 let uri = locate()?;
-// => "terminal://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0"
+// => "workspace://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0"
 
 // Inspect everything
 let output = inspect_all()?;
@@ -141,8 +141,8 @@ let sessions = inspect_tmux()?;
 
 ## Requirements
 
-- macOS (uses AppleScript and macOS-specific process inspection)
-- Automation permissions may be required for iTerm2 and Terminal.app inspection
+- macOS: Automation permissions may be required for iTerm2 and Terminal.app inspection
+- Linux and Windows support is planned
 
 ## Notes
 

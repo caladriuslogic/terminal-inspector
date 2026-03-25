@@ -44,7 +44,7 @@ pub fn locate() -> Result<String> {
         }
     }
 
-    Ok(format!("terminal://{}", segments.join("/")))
+    Ok(format!("workspace://{}", segments.join("/")))
 }
 
 /// Walk up the process tree from our PID to find a TTY.

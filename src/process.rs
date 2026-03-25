@@ -58,10 +58,10 @@ pub fn get_shell_for_tty(tty: &str) -> Option<(u32, String)> {
     None
 }
 
-/// Check if a macOS GUI app is running via System Events, return its PIDs.
+/// Check if a GUI app is running via System Events (macOS), return its PIDs.
 /// Falls back to pgrep for non-GUI processes.
 pub fn find_pids_by_name(name: &str) -> Vec<u32> {
-    // Try macOS System Events first — reliably finds GUI apps that pgrep misses
+    // Try System Events first (macOS) — reliably finds GUI apps that pgrep misses
     let script = format!(
         r#"tell application "System Events" to get the unix id of every process whose name is "{}""#,
         name

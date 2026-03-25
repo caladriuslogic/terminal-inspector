@@ -1,13 +1,13 @@
 [package]
 name = "workspace-inspector"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 authors = ["John Morrow <johnmorrow@users.noreply.github.com>"]
-description = "CLI tool to inspect running terminal emulators, multiplexer sessions, and browser tabs on macOS"
+description = "CLI tool to inspect running terminal emulators, multiplexer sessions, and browser tabs"
 license = "MIT"
 repository = "https://github.com/caladriuslogic/workspace-inspector"
 readme = "README.md"
-keywords = ["terminal", "tmux", "zellij", "browser", "macos"]
+keywords = ["terminal", "tmux", "zellij", "browser", "cli"]
 categories = ["command-line-utilities"]
 
 [dependencies]

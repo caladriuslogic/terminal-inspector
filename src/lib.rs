@@ -1,4 +1,4 @@
-//! Inspect running terminal emulators, multiplexer sessions, and browsers on macOS.
+//! Inspect running terminal emulators, multiplexer sessions, and browsers.
 //!
 //! # Example
 //!
@@ -7,7 +7,7 @@
 //!
 //! // Get a canonical URI for the current terminal location
 //! let uri = locate().unwrap();
-//! println!("{}", uri); // terminal://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0
+//! println!("{}", uri); // workspace://iterm2/window:1229/tab:3/tmux:main/window:1/pane:0
 //!
 //! // Inspect all running terminals and multiplexers
 //! let output = inspect_all().unwrap();
