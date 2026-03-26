@@ -1,9 +1,15 @@
 mod alacritty;
-mod apple_terminal;
 mod ghostty;
-mod iterm2;
 mod kitty;
 mod wezterm;
+
+#[cfg(target_os = "macos")]
+mod apple_terminal;
+#[cfg(target_os = "macos")]
+mod iterm2;
+
+#[cfg(target_os = "linux")]
+mod gnome_terminal;
 
 use anyhow::Result;
 
@@ -12,12 +18,15 @@ use crate::types::TerminalEmulator;
 pub fn detect_all() -> Result<Vec<TerminalEmulator>> {
     let mut terminals = Vec::new();
 
-    if let Ok(Some(t)) = iterm2::detect() {
-        terminals.push(t);
-    }
+    #[cfg(target_os = "macos")]
+    {
+        if let Ok(Some(t)) = iterm2::detect() {
+            terminals.push(t);
+        }
 
-    if let Ok(Some(t)) = apple_terminal::detect() {
-        terminals.push(t);
+        if let Ok(Some(t)) = apple_terminal::detect() {
+            terminals.push(t);
+        }
     }
 
     if let Ok(Some(t)) = kitty::detect() {
@@ -34,6 +43,13 @@ pub fn detect_all() -> Result<Vec<TerminalEmulator>> {
 
     if let Ok(Some(t)) = alacritty::detect() {
         terminals.push(t);
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        if let Ok(Some(t)) = gnome_terminal::detect() {
+            terminals.push(t);
+        }
     }
 
     Ok(terminals)

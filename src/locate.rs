@@ -14,7 +14,7 @@ pub fn locate() -> Result<String> {
     // Detect the terminal emulator layer
     if let Some(tty_name) = &tty {
         if let Some((app, win_id, tab_idx)) = find_terminal_for_tty(tty_name)? {
-            segments.push(app.to_lowercase());
+            segments.push(app.to_lowercase().replace(' ', "-"));
             segments.push(format!("window:{}", win_id));
             if let Some(idx) = tab_idx {
                 segments.push(format!("tab:{}", idx));
@@ -72,7 +72,7 @@ fn find_our_tty() -> Option<String> {
         let tty = parts[0];
         let ppid: u32 = parts[1].parse().ok()?;
 
-        if tty != "??" && !tty.is_empty() {
+        if tty != "??" && tty != "?" && !tty.is_empty() {
             return Some(format!("/dev/{}", tty));
         }
 

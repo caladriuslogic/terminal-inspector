@@ -1,23 +1,34 @@
 use std::process::Command;
 
-/// Get the current working directory of a process by PID using lsof.
+/// Get the current working directory of a process by PID.
+/// Uses /proc on Linux, falls back to lsof on other platforms.
 pub fn get_cwd(pid: u32) -> Option<String> {
-    let output = Command::new("lsof")
-        .args(["-p", &pid.to_string(), "-a", "-d", "cwd", "-Fn"])
-        .output()
-        .ok()?;
-
-    if !output.status.success() {
-        return None;
+    #[cfg(target_os = "linux")]
+    {
+        std::fs::read_link(format!("/proc/{}/cwd", pid))
+            .ok()
+            .and_then(|p| p.into_os_string().into_string().ok())
     }
 
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    for line in stdout.lines() {
-        if let Some(path) = line.strip_prefix('n') {
-            return Some(path.to_string());
+    #[cfg(not(target_os = "linux"))]
+    {
+        let output = Command::new("lsof")
+            .args(["-p", &pid.to_string(), "-a", "-d", "cwd", "-Fn"])
+            .output()
+            .ok()?;
+
+        if !output.status.success() {
+            return None;
         }
+
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        for line in stdout.lines() {
+            if let Some(path) = line.strip_prefix('n') {
+                return Some(path.to_string());
+            }
+        }
+        None
     }
-    None
 }
 
 /// Given a tty name (e.g. "/dev/ttys000" or "ttys000"), find the shell process and its PID.
@@ -58,33 +69,37 @@ pub fn get_shell_for_tty(tty: &str) -> Option<(u32, String)> {
     None
 }
 
-/// Check if a GUI app is running via System Events (macOS), return its PIDs.
-/// Falls back to pgrep for non-GUI processes.
+/// Find PIDs of a process by name.
+/// On macOS, tries System Events (AppleScript) first for GUI apps, then falls back to pgrep.
+/// On Linux, uses pgrep directly.
 pub fn find_pids_by_name(name: &str) -> Vec<u32> {
-    // Try System Events first (macOS) — reliably finds GUI apps that pgrep misses
-    let script = format!(
-        r#"tell application "System Events" to get the unix id of every process whose name is "{}""#,
-        name
-    );
-    let output = Command::new("osascript")
-        .args(["-e", &script])
-        .output();
+    #[cfg(target_os = "macos")]
+    {
+        // Try System Events first (macOS) — reliably finds GUI apps that pgrep misses
+        let script = format!(
+            r#"tell application "System Events" to get the unix id of every process whose name is "{}""#,
+            name
+        );
+        let output = Command::new("osascript")
+            .args(["-e", &script])
+            .output();
 
-    if let Ok(ref o) = output {
-        if o.status.success() {
-            let stdout = String::from_utf8_lossy(&o.stdout);
-            let pids: Vec<u32> = stdout
-                .trim()
-                .split(", ")
-                .filter_map(|s| s.trim().parse::<u32>().ok())
-                .collect();
-            if !pids.is_empty() {
-                return pids;
+        if let Ok(ref o) = output {
+            if o.status.success() {
+                let stdout = String::from_utf8_lossy(&o.stdout);
+                let pids: Vec<u32> = stdout
+                    .trim()
+                    .split(", ")
+                    .filter_map(|s| s.trim().parse::<u32>().ok())
+                    .collect();
+                if !pids.is_empty() {
+                    return pids;
+                }
             }
         }
     }
 
-    // Fall back to pgrep for non-GUI processes
+    // Use pgrep to find processes by name
     let output = Command::new("pgrep")
         .args(["-x", name])
         .output();
