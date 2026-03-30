@@ -1,0 +1,82 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug: all (default)",
+      "cargo": {
+        "args": ["build", "--bin=workspace-inspector"],
+        "filter": { "name": "workspace-inspector", "kind": "bin" }
+      },
+      "args": ["--pretty"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug: terminals",
+      "cargo": {
+        "args": ["build", "--bin=workspace-inspector"],
+        "filter": { "name": "workspace-inspector", "kind": "bin" }
+      },
+      "args": ["terminals", "--pretty"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug: tmux",
+      "cargo": {
+        "args": ["build", "--bin=workspace-inspector"],
+        "filter": { "name": "workspace-inspector", "kind": "bin" }
+      },
+      "args": ["tmux", "--pretty"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug: shelldon",
+      "cargo": {
+        "args": ["build", "--bin=workspace-inspector"],
+        "filter": { "name": "workspace-inspector", "kind": "bin" }
+      },
+      "args": ["shelldon", "--pretty"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug: zellij",
+      "cargo": {
+        "args": ["build", "--bin=workspace-inspector"],
+        "filter": { "name": "workspace-inspector", "kind": "bin" }
+      },
+      "args": ["zellij", "--pretty"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug: where",
+      "cargo": {
+        "args": ["build", "--bin=workspace-inspector"],
+        "filter": { "name": "workspace-inspector", "kind": "bin" }
+      },
+      "args": ["where"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug: unit tests",
+      "cargo": {
+        "args": ["test", "--no-run", "--lib"],
+        "filter": { "name": "workspace-inspector", "kind": "lib" }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
