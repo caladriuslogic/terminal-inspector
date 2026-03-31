@@ -8,6 +8,7 @@ impl InspectorOutput {
             shelldon: vec![],
             zellij: vec![],
             ides: vec![],
+            browsers: vec![],
         }
     }
 
@@ -60,6 +61,18 @@ impl InspectorOutput {
             }
         }
 
+        for browser in &mut self.browsers {
+            let app = browser.app.to_lowercase().replace(' ', "-");
+            for win in &mut browser.windows {
+                for tab in &mut win.tabs {
+                    tab.uri = Some(format!(
+                        "workspace://{}/window:{}/tab:{}",
+                        app, win.id, tab.index
+                    ));
+                }
+            }
+        }
+
         for ide in &mut self.ides {
             let app = ide.app.to_lowercase();
             for project in &mut ide.projects {
@@ -84,6 +97,8 @@ pub struct InspectorOutput {
     pub zellij: Vec<ZellijSession>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub ides: Vec<IdeInstance>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub browsers: Vec<BrowserInstance>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -100,6 +115,29 @@ pub struct IdeProject {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
     pub path: String,
+    pub active: bool,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct BrowserInstance {
+    pub app: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pid: Option<u32>,
+    pub windows: Vec<BrowserWindow>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct BrowserWindow {
+    pub id: String,
+    pub tabs: Vec<BrowserTab>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct BrowserTab {
+    pub index: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+    pub title: String,
     pub active: bool,
 }
 

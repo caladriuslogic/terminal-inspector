@@ -25,6 +25,8 @@ enum Command {
     Zellij,
     /// Detect running IDEs (Xcode, etc.)
     Ides,
+    /// Detect running browsers (Chrome, etc.)
+    Browsers,
     /// Print a canonical URI for the current terminal location
     Where,
     /// Show everything (default)
@@ -63,6 +65,10 @@ fn main() -> Result<()> {
         },
         Command::Ides => InspectorOutput {
             ides: workspace_inspector::inspect_ides()?,
+            ..empty
+        },
+        Command::Browsers => InspectorOutput {
+            browsers: workspace_inspector::inspect_browsers()?,
             ..empty
         },
         Command::Where => unreachable!("handled above"),
@@ -240,6 +246,36 @@ fn print_pretty(output: &InspectorOutput) {
         }
     }
 
+    if !output.browsers.is_empty() {
+        println!("== Browsers ==\n");
+        for browser in &output.browsers {
+            let pid_str = browser
+                .pid
+                .map(|p| format!(" (pid {})", p))
+                .unwrap_or_default();
+            println!("{}{}", browser.app, pid_str);
+
+            for win in &browser.windows {
+                println!("  Window {}", win.id);
+                for tab in &win.tabs {
+                    let active_str = if tab.active { " [active]" } else { "" };
+                    let uri_str = tab
+                        .uri
+                        .as_ref()
+                        .map(|u| format!("\n      {}", u))
+                        .unwrap_or_default();
+                    let title: String = tab.title.chars().take(60).collect();
+                    let truncated = if tab.title.len() > 60 { "..." } else { "" };
+                    println!(
+                        "    Tab {}: \"{}{}\"{}{}",
+                        tab.index, title, truncated, active_str, uri_str
+                    );
+                }
+            }
+            println!();
+        }
+    }
+
     if !output.ides.is_empty() {
         println!("== IDEs ==\n");
         for ide in &output.ides {
@@ -267,7 +303,8 @@ fn print_pretty(output: &InspectorOutput) {
         && output.tmux.is_empty()
         && output.shelldon.is_empty()
         && output.zellij.is_empty()
-        && output.ides.is_empty();
+        && output.ides.is_empty()
+        && output.browsers.is_empty();
 
     if all_empty {
         println!("No terminals or multiplexer sessions detected.");

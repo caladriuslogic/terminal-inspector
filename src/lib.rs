@@ -16,6 +16,7 @@
 //! }
 //! ```
 
+pub mod browsers;
 pub mod ides;
 mod locate;
 mod process;
@@ -38,9 +39,18 @@ pub fn inspect_all() -> Result<InspectorOutput> {
         shelldon: shelldon::detect()?,
         zellij: zellij::detect()?,
         ides: ides::detect_all()?,
+        browsers: browsers::detect_all()?,
     };
     output.populate_uris();
     Ok(output)
+}
+
+/// Inspect only running browsers.
+pub fn inspect_browsers() -> Result<Vec<BrowserInstance>> {
+    let mut out = InspectorOutput::empty();
+    out.browsers = browsers::detect_all()?;
+    out.populate_uris();
+    Ok(out.browsers)
 }
 
 /// Inspect only running IDEs.
