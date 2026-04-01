@@ -7,14 +7,17 @@ use crate::types::{TerminalEmulator, TerminalTab, TerminalWindow};
 const APPLESCRIPT: &str = r#"
 tell application "iTerm2"
     set output to ""
-    repeat with w in windows
+    set winList to every window
+    repeat with w in winList
         try
             set wid to id of w
             set tabIdx to 0
-            repeat with t in tabs of w
+            set tabList to every tab of w
+            repeat with t in tabList
                 try
                     set tabIdx to tabIdx + 1
-                    repeat with s in sessions of t
+                    set sessionList to every session of t
+                    repeat with s in sessionList
                         try
                             set ttyVal to tty of s
                             set titleVal to name of s

@@ -7,10 +7,12 @@ use crate::types::{TerminalEmulator, TerminalTab, TerminalWindow};
 const APPLESCRIPT: &str = r#"
 tell application "Terminal"
     set output to ""
-    repeat with w in windows
+    set winList to every window
+    repeat with w in winList
         try
             set wid to id of w
-            repeat with t in tabs of w
+            set tabList to every tab of w
+            repeat with t in tabList
                 try
                     set ttyVal to tty of t
                     set titleVal to custom title of t
